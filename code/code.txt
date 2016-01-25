@@ -1,0 +1,14 @@
+echo "in code.txt"
+
+################################
+##### screenshot.py ############
+echo "getting main screenshot"
+
+package="$(aapt dump badging /data/app.apk | grep package | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
+#echo "pkg: " $package
+activity="$(aapt dump badging /data/app.apk | grep launchable-activity | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
+echo "activity: "  $activity
+#to unlock phone
+adb shell input keyevent 82
+monkeyrunner ./code/screenshot.py $package $activity
+##################################

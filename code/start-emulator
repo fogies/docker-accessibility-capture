@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+# if [ $# -gt 0 ]; then
+  # CMD=$1
+  PORT=5554
+  ls
+  echo "Starting emulator[$PORT]..."
+  touch /data/emulog.txt
+  echo "here">/data/emulog.txt
+  adb devices
+  sdkVersion="$(aapt dump badging /data/app.apk | grep sdkVersion | sed s/sdkVersion://g | sed s/\'//g)"
+  targetSdkVersion="$(aapt dump badging /data/app.apk | grep sdkVersion | sed s/sdkVersion://g | sed s/\'//g)"
+  echo "target SDk $targetSdkVersion"
+  echo "sdkVersion $sdkVersion"
+  emuVersion="droid-10"
+  echo $emuVersion
+  emulator -memory 756 -avd $emuVersion -no-skin -no-audio -no-window -port $PORT &
+  # bash wait-for-emulator
+  echo "Waiting for emulator to start..."
+
+	bootanim=""
+	failcounter=0
+	counter=0
+	until [[ "$bootanim" =~ "stopped" ]]; do
+	   bootanim=`adb -e shell getprop init.svc.bootanim 2>&1`
+	   if [[ "$bootanim" =~ "not found" ]]; then
+	      let "failcounter += 1"
+	      if [[ $failcounter -gt 3 ]]; then
+	        echo "  Failed to start emulator"
+	        exit 1
+	      fi
+	   fi
+	   echo "Waiting for emulator to start..."
+	   echo $counter
+	   let "counter +=1"
+	   if [[ $counter -eq 87 ]]; then
+	   		#echo "log: \n"
+	   		#adb logcat -v long > /data/emulog.txt
+	   		echo "here 87:"
+	   		adb logcat -d -v long >>data/emulog.txt
+	   	fi
+	   	if [[ $counter -eq 170 ]]; then
+	   		#echo "log" 
+	   		#adb logcat -v long
+	   		#adb logcat -v long >> /data/emulog.txt
+	   		echo "here \n"
+	   	fi
+	   sleep 1
+	done
+	echo "logs"
+	adb logcat -d -v long >>data/emulog.txt
+	#monkeyrunner screenshot.py
+	#echo "installing apk"
+	#adb install /tmp/EduGame.apk
+	#echo "opening app"
+	#package="$(aapt dump badging /data/app.apk | grep package | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
+	#echo "pkg: " $package
+	#activity="$(aapt dump badging /data/app.apk | grep launchable-activity | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
+	#echo "activity: "  $activity
+	#runComponent = $package + '/' + $activity
+	#echo $runComponent
+	#adb shell am start -n $package/$activity
+	#echo "getting screenshot"
+	#adb devices
+	#more ./code/screenshot.py
+	#unlock screen 
+
+	codefile="./code/code.txt"
+	dos2unix $codefile
+	bash $codefile
+	#adb shell input keyevent 82
+	#monkeyrunner ./code/screenshot.py $package $activity
+	#pwd
+	#ls
+	#cd test
+	#pwd
+	#ls
+	#cd ./test/logs/
+	#ls
+	echo "complete"
+	#while true; do
+	#	sleep 10
+	#done
+
+  # $CMD
+# else
+ # echo "No command is specified"
+# fi
