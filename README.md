@@ -1,3 +1,7 @@
+
+# docker-accessibility-capture
+Definitely need a renaming :)
+
 # Docker Android Ap Crawler
 
 ## dependencies:
@@ -64,4 +68,7 @@ this should be run any time another app is added or the base docker-compose is m
 must be run in the root directory
 
 will merge individual app's docker-compose with base docker-compose. will then build and run a container for each app in succession. These are not parallel. If one app's run hang, the app's after it will not be built and run
+
+
+
 
