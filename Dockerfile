@@ -1,5 +1,5 @@
 # Start with ubuntu 12.04 (i386).
-FROM toopher/ubuntu-i386:12.04
+FROM ubuntu:12.04
 
 RUN echo "here"
 # Specially for SSH access and port redirection
@@ -7,6 +7,7 @@ ENV ROOTPASSWORD android
 
 # Expose ADB, ADB control and VNC ports
 EXPOSE 22
+EXPOSE 5037
 EXPOSE 5554
 EXPOSE 5555
 EXPOSE 5900
@@ -21,6 +22,7 @@ RUN apt-get -y update && \
 	apt-get -y install \
 	bzip2 \
 	gcc-multilib \
+	net-tools \
 	python-software-properties \
 	ssh \
 	&& \
@@ -37,7 +39,7 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt
 # Install oracle-jdk7
 RUN apt-get update && \
 	apt-get -y install \
-	oracle-java7-installer:i386\
+	oracle-java7-installer\
     && \
     apt-get clean
 
@@ -60,14 +62,18 @@ RUN echo "y" | android update sdk --filter tools --no-ui --force
 RUN echo "y" | android update sdk --filter 2 --no-ui --force
 RUN echo "y" | android update sdk --filter platform --no-ui --force
 RUN echo "y" | android update sdk --filter build-tools-22.0.1 --no-ui -a
-#RUN echo "y" | android update sdk --filter sys-img-x86-android-9 --no-ui -a
-RUN echo "y" | android update sdk --filter sys-img-x86-android-10 --no-ui -a
-#RUN echo "y" | android update sdk --filter sys-img-x86-android-16 --no-ui -a
-#RUN echo "y" | android update sdk --filter sys-img-x86-android-18 --no-ui -a
+#RUN echo "y" | android update sdk --filter sys-img-x86-android-10 --no-ui -a
 #RUN echo "y" | android update sdk --filter sys-img-x86-android-19 --no-ui -a
 RUN echo "y" | android update sdk --filter sys-img-x86-android-21 --no-ui -a
 #RUN echo "y" | android update sdk --filter sys-img-x86-android-22 --no-ui -a
+#RUN echo "y" | android update sdk --filter sys-img-x86-android-23 --no-ui -a
+#RUN echo "y" | android update sdk --filter sys-img-armeabi-v7a-android-19 --no-ui -a
+RUN echo "y" | android update sdk --filter sys-img-armeabi-v7a-android-21 --no-ui -a
+#RUN echo "y" | android update sdk --filter sys-img-armeabi-v7a-android-22 --no-ui -a
 
+
+#update adb
+RUN echo "y" | android update adb
 #for adb
 ENV PATH $PATH:$ANDROID_HOME/platform-tools
 #aapt
@@ -79,7 +85,9 @@ ENV PATH $PATH:$ANDROID_HOME/build-tools/22.0.1
 RUN apt-get update && \
 	apt-get install -y \ 
 	dos2unix \
+	socat \
 	&& \
+
 	apt-get clean
 
 
@@ -92,16 +100,14 @@ RUN android list targets
 #RUN dos2unix /test/*
 #RUN chmod +x /test/*
 
-#RUN echo 'n' | android create avd --force -n droid-9 -t android-9 --abi default/x86
-RUN echo 'n' | android create avd --force -n droid-10 -t android-10 --abi default/x86
-#RUN echo 'n' | android create avd --force -n emu -t android-16 --abi default/x86
-#RUN echo 'n' | android create avd --force -n droid-18 -t android-18 --abi default/x86
-#RUN echo 'n' | android create avd --force -n droid-19 -t android-19 --abi default/x86
-RUN echo 'n' | android create avd --force -n droid-21 -t android-21 --abi default/x86
 
+#RUN echo 'n' | android create avd --force -n droid-10 -t android-10 --abi default/x86
+#RUN echo 'n' | android create avd --force -n droid-19 -t android-19 --abi default/x86
+#RUN echo 'n' | android create avd --force -n droid-21 -t android-21 --abi default/x86
+#RUN echo 'n' | android create avd --force -n droid-21-arm -t android-21 --abi default/armeabi-v7a
 #RUN echo 'n' | android create avd --force -n droid-22 -t android-22 --abi default/x86
 
-#RUN echo 'n' | android create avd --force -n test -t android-21 --abi default/x86
+#RUN echo 'n' | android create avd --force -n droid-23 -t android-23 --abi default/x86
 CMD ["bash", "./code/start-emulator"]
 #RUN ls
 #RUN adb devices

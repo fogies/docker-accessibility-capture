@@ -17,7 +17,7 @@ activity = sys.argv[2]
 #package='com.zodinplex.abc.kids.letters.educational.sounds.baby'
 #activity=`aapt dump badging /tmp/EduGame.apk | grep Activity | awk '{print $2}' | sed s/name=//g | sed s/\'//g`
 runComponent = package + '/' + activity
-
+device.installPackage('./data/app-debug.apk')
 device.installPackage('./data/app.apk')
 #time.sleep(20)
 print "1"

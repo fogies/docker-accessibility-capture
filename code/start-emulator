@@ -5,50 +5,72 @@
   PORT=5554
   ls
   echo "Starting emulator[$PORT]..."
-  touch /data/emulog.txt
-  echo "here">/data/emulog.txt
-  adb devices
+  emulog="data/emulog.txt"
+  #touch $emulog
+  #echo "beginning here">$emulog
+  adb devices #>>$emulog
   sdkVersion="$(aapt dump badging /data/app.apk | grep sdkVersion | sed s/sdkVersion://g | sed s/\'//g)"
   targetSdkVersion="$(aapt dump badging /data/app.apk | grep sdkVersion | sed s/sdkVersion://g | sed s/\'//g)"
-  echo "target SDk $targetSdkVersion"
-  echo "sdkVersion $sdkVersion"
-  emuVersion="droid-10"
-  echo $emuVersion
-  emulator -memory 756 -avd $emuVersion -no-skin -no-audio -no-window -port $PORT &
+  #echo "target SDk $targetSdkVersion \n" \n>>$emulog
+  #echo "sdkVersion $sdkVersion"
+  emuVersion="droid-21-arm"
+  #echo $emuVersion\n>> $emulog
+  EMULATOR="android-21"
+  ARCH="x86"
+  EMU="x86"
+  #echo "pre create" >>$emulog
+  echo "no" | android create avd -f -n test -t ${EMULATOR} --abi default/${ARCH} #>> $emulog
+  #echo "\n post create" >>$emulog
+  adb devices #>>$emulog
+  echo "no" | emulator64-${EMU} -avd test -noaudio -no-window -gpu off -verbose -qemu -usbdevice tablet #-vnc :0 #>>$emulog
+  #echo \n"\n post start" >>$emulog
+  echo "post start"
+  #adb kill-server
+  #adb start-server
+  #adb logcat -d #> data/logcat.txt &
+  echo "post reboot"
+  #emulator64-arm -avd $emuVersion -no-skin -noaudio -no-window -gpu off -qemu -vnc :0 & >> /data/droid.txxt
   # bash wait-for-emulator
-  echo "Waiting for emulator to start..."
+  #echo "Waiting for emulator to start...">>$emulog
 
 	bootanim=""
 	failcounter=0
 	counter=0
+	this=0
+	# while [[ $counter -le 170 ]] 
 	until [[ "$bootanim" =~ "stopped" ]]; do
 	   bootanim=`adb -e shell getprop init.svc.bootanim 2>&1`
 	   if [[ "$bootanim" =~ "not found" ]]; then
 	      let "failcounter += 1"
 	      if [[ $failcounter -gt 3 ]]; then
-	        echo "  Failed to start emulator"
+	#        echo "  Failed to start emulator" >>$emulog
 	        exit 1
 	      fi
 	   fi
-	   echo "Waiting for emulator to start..."
-	   echo $counter
+	 #  echo "Waiting for emulator to start..." >>$emulog
+	  # echo $counter >>$emulog
 	   let "counter +=1"
-	   if [[ $counter -eq 87 ]]; then
+	   if [[ $(($counter % 10)) -eq 0 ]]; then
 	   		#echo "log: \n"
-	   		#adb logcat -v long > /data/emulog.txt
-	   		echo "here 87:"
-	   		adb logcat -d -v long >>data/emulog.txt
+	   		#adb logcat -d -v long #> /data/emulog.txt
+	   #		echo "here 87:" >>$emulog
+	   		adb devices #>>$emulog
+	   		#echo "###########################################">>$emulog
+	   		#>>data/emulog.txt
+	   		#touch data/logcat.txt
+	   		#adb logcat > data/logcat.txt &
+	   		# >>data/emulog.txt
 	   	fi
 	   	if [[ $counter -eq 170 ]]; then
 	   		#echo "log" 
-	   		#adb logcat -v long
+	   		#adb logcat -d -v long
 	   		#adb logcat -v long >> /data/emulog.txt
-	   		echo "here \n"
+	   		#echo "here \n" >>$emulog
 	   	fi
 	   sleep 1
 	done
-	echo "logs"
-	adb logcat -d -v long >>data/emulog.txt
+	#echo "logs" >>$emulog
+	adb logcat -d -v long #>>data/emulog.txt
 	#monkeyrunner screenshot.py
 	#echo "installing apk"
 	#adb install /tmp/EduGame.apk
