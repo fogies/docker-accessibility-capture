@@ -1,3 +1,4 @@
+# this file is from the base code from https://github.com/tracer0tong/android-emulator and not applicabl
 SHELL := /bin/bash
 ALIAS = "android"
 EXISTS := $(shell docker ps -a -q -f name=$(ALIAS))
