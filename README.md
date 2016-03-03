@@ -36,10 +36,14 @@ Definitely need a renaming :)
  the apk within that directory *must* be named app.apk
 
 
-after installing dependencies run:
+after installing dependencies run  (see detailed descriptions below):
+
 python create-base-docker-compose.py <root_directory_path>
+
 bash make-package-info.sh
+
 python create-docker-compose.py
+
 bash run-all-apps.sh
 
 ## scripts
