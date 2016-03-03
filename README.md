@@ -38,18 +38,18 @@ Definitely need a renaming :)
 
 after installing dependencies run  (see detailed descriptions below):
 
-python create-base-docker-compose.py <root_directory_path>
+`python create-base-docker-compose.py <root_directory_path>`
 
-bash make-package-info.sh
+`bash make-package-info.sh`
 
-python create-docker-compose.py
+`python create-docker-compose.py`
 
-bash run-all-apps.sh
+`bash run-all-apps.sh`
 
 ## scripts
 ### make-package-info.sh
 
-'bash create-package-info.sh'
+`bash create-package-info.sh`
 
 use to extract information from apk files located in the apps folders. By extracting package name and main activity, future scripts can open up app to home screen. 
 
