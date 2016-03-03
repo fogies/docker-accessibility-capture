@@ -70,6 +70,7 @@ RUN chown -R root:root /usr/local/android-sdk/
 RUN echo "y" | android update sdk --filter platform-tool --no-ui --force
 RUN echo "y" | android update sdk --filter platform --no-ui --force
 RUN echo "y" | android update sdk --filter build-tools-22.0.1 --no-ui -a
+#RUN echo "y" | android update sdk --filter build-tools-19.0.1 --no-ui -a
 RUN echo "y" | android update sdk --filter sys-img-x86-android-19 --no-ui -a
 RUN echo "y" | android update sdk --filter sys-img-x86-android-21 --no-ui -a
 RUN echo "y" | android update sdk --filter sys-img-x86-android-22 --no-ui -a
@@ -100,7 +101,33 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN apt-get install -y socat
 
 # Add entrypoint 
-ADD entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
+#ADD entrypoint.sh /entrypoint.sh
+#RUN chmod +x code/entrypoint.sh
+ENTRYPOINT ["./code/entrypoint.sh"]
 CMD ["-e","android-19","-a","armeabi-v7a"]
+
+
+#######################################################################################
+############ Begin Accessibility Code #################################################
+#######################################################################################
+
+
+
+# aapt for extracting activities 
+ENV PATH $PATH:$ANDROID_HOME/build-tools/22.0.1
+
+# don't underestimate the power of dos2unix!
+RUN apt-get update && \
+	apt-get install -y \ 
+	dos2unix \
+	&& \
+	apt-get clean
+
+
+
+# dos2unix everything, just in case
+#RUN dos2unix ./code/entrypoint.sh
+
+
+
+
