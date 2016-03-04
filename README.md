@@ -7,10 +7,11 @@ Definitely need a renaming :)
 ## dependencies:
 
 * docker https://www.docker.com/
-...docker-compose https://docs.docker.com/compose/install/
-...'pip install docker-compose'
-...compose-addons https://github.com/dnephin/compose-addons:
-...pip install compose-addons
+* docker-compose https://docs.docker.com/compose/install/
+... 'pip install docker-compose'
+* compose-addons https://github.com/dnephin/compose-addons:
+... pip install compose-addons
+* android SDK: make sure to add <android-SDK>/build-tools/<version #>/ to PATH in order to use the aapt command
 
 
 ## directory structure:
