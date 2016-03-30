@@ -113,7 +113,7 @@ CMD ["-e","android-19","-a","armeabi-v7a"]
 
 
 
-# aapt for extracting activities 
+# aapt for extracting activities, still not working 
 ENV PATH $PATH:$ANDROID_HOME/build-tools/22.0.1
 
 # don't underestimate the power of dos2unix!
