@@ -1,0 +1,4 @@
+apcrawler: 
+    build: C:\Users\ansross\Documents\Research\Android_Accessability_Capture\Code\dockerEmu\android-emulator-access
+    volumes: 
+        - C:\Users\ansross\Documents\Research\Android_Accessability_Capture\Code\dockerEmu\android-emulator-access/code:/code

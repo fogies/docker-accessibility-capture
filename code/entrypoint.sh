@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 while [[ $# > 1 ]]
 do
 key="$1"
@@ -49,8 +50,8 @@ else
 fi
 
 
-echo "no" | /usr/local/android-sdk/tools/android create avd -f -n test -t ${EMULATOR} --abi default/${ARCH} >>$emulog
-echo "no" | /usr/local/android-sdk/tools/emulator64-${EMU} -avd test -noaudio -no-window -gpu off -verbose -qemu -usbdevice tablet -vnc :0 &
+echo "no" | /usr/local/android-sdk/tools/android create avd -f -n test -t ${EMULATOR} --skin WQVGA400 --abi default/${ARCH} >>$emulog
+echo "no" | /usr/local/android-sdk/tools/emulator64-${EMU} -memory 768 -avd test -noaudio -no-window -gpu off -verbose -qemu -usbdevice tablet -vnc :0 &
 adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./logs/screen11.png
 echo "Waiting for emulator to start..." >>$emulog
 
@@ -74,10 +75,21 @@ until [[ "$bootanim" =~ "stopped" ]]; do
    echo "waiting $counter">>$emulog
    sleep 1
 done
-echo "installing">>$emulog
-adb install ./data/app.apk >>$emulog
-#adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./logs/screen2.png
+#echo "installing accessibility service" >>$emulog
+#adb install ./code/access.apk >>$emulog
+#echo "installing ap">>$emulog
+#adb install ./data/app.apk >>$emulog
+#adb shell am start -a android.intent.action.View -d 'market://details?id=com.a1.quiz.ged.free'
+#docker exec b3f adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./logs/nowScreen.png
 #ls /usr/local/android-sdk/build-tools/
+echo "starting accessibility logging service" >>$emulog
+#to unlock phone
+adb shell input keyevent 82
+while true
+do
+  a=2
+done
+monkeyrunner ./code/access-service-start.py >>$emulog
 echo "getting main screenshot" >>$emulog
 #dos2unix /usr/local/android-sdk/build-tools/22.0.1/*
 #package="$(/usr/local/android-sdk/build-tools/22.0.1/aapt dump badging /stuff/app.apk | grep package | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"

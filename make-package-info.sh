@@ -19,3 +19,12 @@ for d in $directory*/ ; do
 	echo "package:"$package > $filename
 	echo "activity:"$activity >>$filename
 done 
+#create package info for accessibility service
+accessServiceDir=$rootdirectory"/code/"
+cd $accessServiceDir
+filename=$accessServiceDir"accessPackageInfo.txt"
+package="$(aapt dump badging access.apk | grep package | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
+activity="$(aapt dump badging access.apk | grep launchable-activity | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
+echo "writing packgeInfo in "$d>>$gen_log
+echo "package:"$package > $filename
+echo "activity:"$activity >>$filename

@@ -1,0 +1,5 @@
+apcrawler: 
+    volumes: 
+        - C:\Users\ansross\Documents\Research\Android_Accessability_Capture\Code\dockerEmu\android-emulator-access/code:/code
+        - C:\Users\ansross\Documents\Research\Android_Accessability_Capture\Code\dockerEmu\android-emulator-access/apps/GEDPracticeTest:/data 
+        - C:\Users\ansross\Documents\Research\Android_Accessability_Capture\Code\dockerEmu\android-emulator-access/apps/GEDPracticeTest/logs:/logs 

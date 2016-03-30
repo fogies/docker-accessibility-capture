@@ -1,0 +1,2 @@
+package:com.a1.quiz.ged.free
+activity:com.a1.quiz.ged.free.MainActivity
