@@ -30,6 +30,7 @@ count=1
 device.startActivity(component=runComponent)
 #time.sleep(10)
 print "runComponent: "+runComponent
+time.sleep(10)
 
 screenShot = device.takeSnapshot()
 print "writing to : ./logs/"+filename+str(count)+".png"
@@ -37,6 +38,7 @@ screenShot.writeToFile('./logs/'+filename+str(count)+".png",'png')
 count=count+1
 #navigate to filling in app package name
 device.press('KEYCODE_DPAD_DOWN',MonkeyDevice.DOWN_AND_UP)
+time.sleep(5)
 screenShot = device.takeSnapshot()
 print "writing to : ./logs/"+filename+str(count)+".png"
 screenShot.writeToFile('./logs/'+filename+str(count)+".png",'png')
@@ -60,45 +62,10 @@ count=count+1
 
 #set package
 device.press('KEYCODE_DPAD_DOWN',MonkeyDevice.DOWN_AND_UP)
-time.sleep(3)
+time.sleep(6)
 device.press('KEYCODE_ENTER',MonkeyDevice.DOWN_AND_UP)
 time.sleep(5)
 screenShot = device.takeSnapshot()
 print "writing to : ./logs/"+filename+str(count)+".png"
 screenShot.writeToFile('./logs/'+filename+str(count)+".png",'png')
 count=count+1
-
-
-'''
-#navigate to fill in package
-device.press('KEYCODE_DPAD_UP',MonkeyDevice.DOWN_AND_UP)
-
-f = open('./data/packageInfo.txt', 'r')
-screenShot = device.takeSnapshot()
-print "writing to : ./logs/"+filename+str(count)+".png"
-screenShot.writeToFile('./logs/'+filename+str(count)+".png",'png')
-count=count+1
-appPackage = f.readline().split(":")[1]
-f.close() 
-device.type(appPackage)
-time.sleep(5)
-'''
-
-'''
-screenShot = device.takeSnapshot()
-print "writing to : ./logs/"+filename+str(count)+".png"
-screenShot.writeToFile('./logs/'+filename+str(count)+".png",'png')
-count=count+1
-
-
-#runComponent='com.android.settings.accessibility/com.android.settings.accessibility.AccessibilitySettings'
-#device.press('KEYCODE_ENTER',MonkeyDevice.DOWN_AND_UP)
-
-#device.press('KEYCODE_HOME',MonkeyDevice.DOWN_AND_UP)
-#time.sleep(10)
-
-device.startActivity(component=runComponent)
-'''
-
-
-

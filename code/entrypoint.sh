@@ -76,7 +76,7 @@ until [[ "$bootanim" =~ "stopped" ]]; do
    sleep 1
 done
 #echo "installing accessibility service" >>$emulog
-#adb install ./code/access.apk >>$emulog
+adb install ./code/access.apk >>$emulog
 #echo "installing ap">>$emulog
 #adb install ./data/app.apk >>$emulog
 #adb shell am start -a android.intent.action.View -d 'market://details?id=com.a1.quiz.ged.free'
@@ -85,6 +85,12 @@ done
 echo "starting accessibility logging service" >>$emulog
 #to unlock phone
 adb shell input keyevent 82
+adb shell am start -a android.settings.ACCESSIBILITY_SETTINGS
+#for snapshots from turning on accessibility service
+mkdir ./logs/accessSettings
+monkeyrunner ./code/turn-on-access-service.py >>$emulog
+mkdir ./logs/ServiceScreen
+monkeyrunner ./code/set-app-package.py >>$emulog
 while true
 do
   a=2
