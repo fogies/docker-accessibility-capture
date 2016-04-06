@@ -7,10 +7,11 @@ Definitely need a renaming :)
 ## dependencies:
 
 * docker https://www.docker.com/
-...docker-compose https://docs.docker.com/compose/install/
-...'pip install docker-compose'
-...compose-addons https://github.com/dnephin/compose-addons:
-...pip install compose-addons
+* docker-compose https://docs.docker.com/compose/install/
+... 'pip install docker-compose'
+* compose-addons https://github.com/dnephin/compose-addons:
+... pip install compose-addons
+* android SDK: make sure to add <android-SDK>/build-tools/<version #>/ to PATH in order to use the aapt command
 
 
 ## directory structure:
@@ -36,16 +37,20 @@ Definitely need a renaming :)
  the apk within that directory *must* be named app.apk
 
 
-after installing dependencies run:
-python create-base-docker-compose.py <root_directory_path>
-bash make-package-info.sh
-python create-docker-compose.py
-bash run-all-apps.sh
+after installing dependencies run  (see detailed descriptions below):
+
+`python create-base-docker-compose.py <root_directory_path>`
+
+`bash make-package-info.sh`
+
+`python create-docker-compose.py`
+
+`bash run-all-apps.sh`
 
 ## scripts
 ### make-package-info.sh
 
-'bash create-package-info.sh'
+`bash create-package-info.sh`
 
 use to extract information from apk files located in the apps folders. By extracting package name and main activity, future scripts can open up app to home screen. 
 
