@@ -75,10 +75,10 @@ until [[ "$bootanim" =~ "stopped" ]]; do
    echo "waiting $counter">>$emulog
    sleep 1
 done
-#echo "installing accessibility service" >>$emulog
+echo "installing accessibility service" >>$emulog
 adb install ./code/access.apk >>$emulog
-#echo "installing ap">>$emulog
-#adb install ./data/app.apk >>$emulog
+echo "installing ap">>$emulog
+adb install ./data/app.apk >>$emulog
 #adb shell am start -a android.intent.action.View -d 'market://details?id=com.a1.quiz.ged.free'
 #docker exec b3f adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./logs/nowScreen.png
 #ls /usr/local/android-sdk/build-tools/
@@ -91,11 +91,12 @@ mkdir ./logs/accessSettings
 monkeyrunner ./code/turn-on-access-service.py >>$emulog
 mkdir ./logs/ServiceScreen
 monkeyrunner ./code/set-app-package.py >>$emulog
-while true
-do
-  a=2
-done
-monkeyrunner ./code/access-service-start.py >>$emulog
+#while true
+#do
+#  a=2
+#done
+#monkeyrunner ./code/access-service-start.py >>$emulog
+
 echo "getting main screenshot" >>$emulog
 #dos2unix /usr/local/android-sdk/build-tools/22.0.1/*
 #package="$(/usr/local/android-sdk/build-tools/22.0.1/aapt dump badging /stuff/app.apk | grep package | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
@@ -110,4 +111,7 @@ echo "getting main screenshot" >>$emulog
 #to unlock phone
 adb shell input keyevent 82
 #adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./logs/screenunlock.png
-monkeyrunner ./code/screenshot.py $package $activity
+monkeyrunner ./code/screenshot.py 
+
+#adb logcat -d *:I | grep TREE_RESULT > ./logs/tree.txt
+#adb logcat -d > ./logs/allLog.txt
