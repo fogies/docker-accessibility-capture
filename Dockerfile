@@ -66,11 +66,12 @@ RUN cd /; rm android-sdk_r23-linux.tgz && rm apache-ant-1.8.4-bin.tar.gz
 # Some preparation before update
 RUN chown -R root:root /usr/local/android-sdk/
 
+RUN android list targets
+
 # Install latest android tools and system images
 RUN echo "y" | android update sdk --filter platform-tool --no-ui --force
 RUN echo "y" | android update sdk --filter platform --no-ui --force
 RUN echo "y" | android update sdk --filter build-tools-22.0.1 --no-ui -a
-#RUN echo "y" | android update sdk --filter build-tools-19.0.1 --no-ui -a
 RUN echo "y" | android update sdk --filter sys-img-x86-android-19 --no-ui -a
 RUN echo "y" | android update sdk --filter sys-img-x86-android-21 --no-ui -a
 RUN echo "y" | android update sdk --filter sys-img-x86-android-22 --no-ui -a
@@ -80,6 +81,8 @@ RUN echo "y" | android update sdk --filter sys-img-armeabi-v7a-android-22 --no-u
 
 # Update ADB
 RUN echo "y" | android update adb
+
+RUN android list targets
 
 # Create fake keymap file
 RUN mkdir /usr/local/android-sdk/tools/keymaps
