@@ -4,7 +4,15 @@
 while [[ $# > 1 ]]
 do
 key="$1"
-emulog="logs/emulog.txt"
+timestamp=$(date +"%Y.%m.%d_%H.%M.%S")
+logsdir="logs/"$timestamp
+echo $logsdir
+mkdir $logsdir
+
+#copy traversal file into the appropriate directory
+cp ./data/traversal.txt $logsdir/traversal.txt
+
+emulog=$logsdir"/emulog.txt"
 touch $emulog
 case $key in
     -e|--emulator)
@@ -52,7 +60,7 @@ fi
 
 echo "no" | /usr/local/android-sdk/tools/android create avd -f -n test -t ${EMULATOR} --skin WQVGA400 --abi default/${ARCH} >>$emulog
 echo "no" | /usr/local/android-sdk/tools/emulator64-${EMU} -memory 768 -avd test -noaudio -no-window -gpu off -verbose -qemu -usbdevice tablet -vnc :0 &
-adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./logs/screen11.png
+#adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./$logsdir/screen11.png
 echo "Waiting for emulator to start..." >>$emulog
 
 bootanim=""
@@ -87,10 +95,10 @@ echo "starting accessibility logging service" >>$emulog
 adb shell input keyevent 82
 adb shell am start -a android.settings.ACCESSIBILITY_SETTINGS
 #for snapshots from turning on accessibility service
-mkdir ./logs/accessSettings
-monkeyrunner ./code/turn-on-access-service.py >>$emulog
-mkdir ./logs/ServiceScreen
-monkeyrunner ./code/set-app-package.py >>$emulog
+mkdir ./$logsdir/accessSettings
+monkeyrunner ./code/turn-on-access-service.py $logsdir >>$emulog
+mkdir ./$logsdir/ServiceScreen
+monkeyrunner ./code/set-app-package.py $logsdir >>$emulog
 #while true
 #do
 #  a=2
@@ -111,7 +119,12 @@ echo "getting main screenshot" >>$emulog
 #to unlock phone
 adb shell input keyevent 82
 #adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./logs/screenunlock.png
-monkeyrunner ./code/screenshot.py 
-
-#adb logcat -d *:I | grep TREE_RESULT > ./logs/tree.txt
-#adb logcat -d > ./logs/allLog.txt
+monkeyrunner ./code/screenshot.py $logsdir >>$emulog
+echo "mainscreen complete" >>$emulog
+echo "traversing app" >>$emulog
+monkeyrunner ./code/traverse-app.py $logsdir >>$emulog
+echo "complete">>$emulog
+echo "getting logs" >>$emulog
+adb logcat -d *:I | grep TREE_RESULT > ./${logsdir}/tree.txt
+adb logcat -d > ./$logsdir/allLog.txt
+echo "complete" >>$emulog

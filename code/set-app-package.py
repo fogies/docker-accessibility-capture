@@ -3,6 +3,7 @@ from com.android.monkeyrunner import MonkeyRunner, MonkeyDevice
 import time, sys
 device = MonkeyRunner.waitForConnection()
 count=1
+logsdir=sys.argv[1]
 filename="ServiceScreen/serviceScreen"
 #device.press('KEYCODE_ENTER', MonkeyDevice.DOWN_AND_UP)
 
@@ -33,29 +34,31 @@ print "runComponent: "+runComponent
 time.sleep(10)
 
 screenShot = device.takeSnapshot()
-print "writing to : ./logs/"+filename+str(count)+".png"
-screenShot.writeToFile('./logs/'+filename+str(count)+".png",'png')
+print "writing to : ./"+logsdir+"/"+filename+str(count)+".png"
+screenShot.writeToFile('./'+logsdir+'/'+filename+str(count)+".png",'png')
 count=count+1
 #navigate to filling in app package name
 device.press('KEYCODE_DPAD_DOWN',MonkeyDevice.DOWN_AND_UP)
 time.sleep(5)
 screenShot = device.takeSnapshot()
-print "writing to : ./logs/"+filename+str(count)+".png"
-screenShot.writeToFile('./logs/'+filename+str(count)+".png",'png')
+print "writing to : ./"+logsdir+"/"+filename+str(count)+".png"
+screenShot.writeToFile('./'+logsdir+'/'+filename+str(count)+".png",'png')
 count=count+1
 
 #find and fill in package info
 f = open('./data/packageInfo.txt', 'r')
 
 appPackage = f.readline().split(":")[1]
+#delete new line
+appPackage = appPackage[:-1]
 f.close() 
 device.type(appPackage)
 #delete new line
-device.press('KEYCODE_DEL',MonkeyDevice.DOWN_AND_UP)
+#device.press('KEYCODE_DEL',MonkeyDevice.DOWN_AND_UP)
 time.sleep(5)
 screenShot = device.takeSnapshot()
-print "writing to : ./logs/"+filename+str(count)+".png"
-screenShot.writeToFile('./logs/'+filename+str(count)+".png",'png')
+print "writing to : ./"+logsdir+"/"+filename+str(count)+".png"
+screenShot.writeToFile('./'+logsdir+'/'+filename+str(count)+".png",'png')
 count=count+1
 
 
@@ -66,6 +69,6 @@ time.sleep(6)
 device.press('KEYCODE_ENTER',MonkeyDevice.DOWN_AND_UP)
 time.sleep(5)
 screenShot = device.takeSnapshot()
-print "writing to : ./logs/"+filename+str(count)+".png"
-screenShot.writeToFile('./logs/'+filename+str(count)+".png",'png')
+print "writing to : ./"+logsdir+"/"+filename+str(count)+".png"
+screenShot.writeToFile('./'+logsdir+'/'+filename+str(count)+".png",'png')
 count=count+1

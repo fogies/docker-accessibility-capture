@@ -2,6 +2,7 @@
 from com.android.monkeyrunner import MonkeyRunner, MonkeyDevice
 import time, sys
 device = MonkeyRunner.waitForConnection()
+logsdir=sys.argv[1]
 
 #pass as arguments the activity and package name pulled from the apk
 print "num args: ", len(sys.argv)
@@ -45,8 +46,8 @@ print "3"
 
 time.sleep(20)
 screenShot = device.takeSnapshot()
-print "writing to : ./logs/mainScreen.png"
-screenShot.writeToFile('./logs/mainScreen.png','png')
+print "writing to : ./"+logsdir+"/mainScreen.png"
+screenShot.writeToFile('./'+logsdir+'/mainScreen.png','png')
 
 #apOpen = False
 #waitCount = 0
