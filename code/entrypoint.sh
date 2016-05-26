@@ -1,5 +1,10 @@
 #!/bin/bash
 
+#while true
+#do
+#  a=2
+#done
+#
 
 while [[ $# > 1 ]]
 do
@@ -9,8 +14,9 @@ logsdir="logs/"$timestamp
 echo $logsdir
 mkdir $logsdir
 
-#copy traversal file into the appropriate directory
-cp ./data/traversal.txt $logsdir/traversal.txt
+#copy traversal file into the appropriate directory#
+#cp ./data/traversal.txt $logsdir/traversal.txt
+cp ./data/traversal.yaml $logsdir/traversal.yaml
 
 emulog=$logsdir"/emulog.txt"
 touch $emulog
@@ -83,22 +89,26 @@ until [[ "$bootanim" =~ "stopped" ]]; do
    echo "waiting $counter">>$emulog
    sleep 1
 done
-echo "installing accessibility service" >>$emulog
-adb install ./code/access.apk >>$emulog
+#echo "installing accessibility service" >>$emulog
+#adb install ./code/access.apk >>$emulog
 echo "installing ap">>$emulog
 adb install ./data/app.apk >>$emulog
+#while true
+#do
+#  a=2
+#done
 #adb shell am start -a android.intent.action.View -d 'market://details?id=com.a1.quiz.ged.free'
 #docker exec b3f adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./logs/nowScreen.png
 #ls /usr/local/android-sdk/build-tools/
-echo "starting accessibility logging service" >>$emulog
+#echo "starting accessibility logging service" >>$emulog
 #to unlock phone
-adb shell input keyevent 82
-adb shell am start -a android.settings.ACCESSIBILITY_SETTINGS
+#adb shell input keyevent 82
+#adb shell am start -a android.settings.ACCESSIBILITY_SETTINGS
 #for snapshots from turning on accessibility service
-mkdir ./$logsdir/accessSettings
-monkeyrunner ./code/turn-on-access-service.py $logsdir >>$emulog
-mkdir ./$logsdir/ServiceScreen
-monkeyrunner ./code/set-app-package.py $logsdir >>$emulog
+#mkdir ./$logsdir/accessSettings
+#monkeyrunner ./code/turn-on-access-service.py $logsdir >>$emulog
+#mkdir ./$logsdir/ServiceScreen
+#monkeyrunner ./code/set-app-package.py $logsdir >>$emulog
 #while true
 #do
 #  a=2
@@ -116,11 +126,12 @@ echo "getting main screenshot" >>$emulog
 #echo "pkg: " $package >>$emulog
 #activity="$(aapt dump badging /data/app.apk | grep launchable-activity | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
 #echo "activity: "  $activity >>$emulog
+
 #to unlock phone
 adb shell input keyevent 82
 #adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./logs/screenunlock.png
-monkeyrunner ./code/screenshot.py $logsdir >>$emulog
-echo "mainscreen complete" >>$emulog
+#monkeyrunner ./code/screenshot.py $logsdir >>$emulog
+#echo "mainscreen complete" >>$emulog
 echo "traversing app" >>$emulog
 monkeyrunner ./code/traverse-app.py $logsdir >>$emulog
 echo "complete">>$emulog

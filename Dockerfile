@@ -119,6 +119,16 @@ CMD ["-e","android-19","-a","armeabi-v7a"]
 # aapt for extracting activities, still not working 
 ENV PATH $PATH:$ANDROID_HOME/build-tools/22.0.1
 
+#for parsing traversal yaml docs
+RUN apt-get update && \
+	apt-get install -y \ 
+	python-yaml \
+	&& \
+	apt-get clean
+RUN echo $PATH
+ENV PATH $PATH:/usr/lib/python2.7/dist-packages/
+RUN echo $PATH
+
 # don't underestimate the power of dos2unix!
 RUN apt-get update && \
 	apt-get install -y \ 
@@ -128,8 +138,9 @@ RUN apt-get update && \
 
 
 
+
 # dos2unix everything, just in case
-#RUN dos2unix ./code/entrypoint.sh
+#RUN dos2unix ./code/*
 
 
 

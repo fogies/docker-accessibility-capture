@@ -44,7 +44,7 @@ print "runComponent: "+runComponent
 #device.press('KEYCODE_MENU', MonkeyDevice.DOWN_AND_UP)
 print "3"
 
-time.sleep(20)
+time.sleep(30)
 screenShot = device.takeSnapshot()
 print "writing to : ./"+logsdir+"/mainScreen.png"
 screenShot.writeToFile('./'+logsdir+'/mainScreen.png','png')
