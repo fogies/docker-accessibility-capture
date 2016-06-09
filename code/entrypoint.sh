@@ -17,6 +17,7 @@ mkdir $logsdir
 #copy traversal file into the appropriate directory#
 #cp ./data/traversal.txt $logsdir/traversal.txt
 cp ./data/traversal.yaml $logsdir/traversal.yaml
+cp ./code/traverse-app.py $logsdir/traverse-app.py
 
 emulog=$logsdir"/emulog.txt"
 touch $emulog
