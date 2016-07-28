@@ -12,8 +12,8 @@ def yaml_loader(filepath):
 	data = yaml.load(file_descriptor)
 	return data
 
-def start_app(device):
-	f = open('./data/packageInfo.txt', 'r')
+def start_app(device, package_info):
+	f = open(package_info, 'r')
 	package = f.readline().split(":")[1]
 	#remove new line
 	package = package[:-1]
@@ -53,18 +53,50 @@ def check_valid_screen(compImage):
 	return 0
 
 if __name__ == "__main__":
+	print "here"
+	#parse command line paramenters
+	traversal_filepath = ''
+	package_info = "./data/packageInfo.txt"
+	logsdir=''
+	num_args = len(sys.argv)
+	arg_iter = 1
+	is_access_service = False
+	while (arg_iter < num_args):
+		print "arg ", arg_iter, ": ", str(sys.argv[arg_iter])
+		if sys.argv[arg_iter] == "-l":
+			arg_iter += 1
+			logsdir = str(sys.argv[arg_iter])
+		elif sys.argv[arg_iter] == "-i":
+			arg_iter += 1
+			package_info = sys.argv[arg_iter]
+		elif sys.argv[arg_iter] == "-t":
+			arg_iter += 1
+			traversal_filepath = sys.argv[arg_iter]#"C:\Users\\ansross\Documents\Research\Android_Accessability_Capture\Code\dockerEmu\\android-emulator-access\code\1traversal.yaml"
+			#traversal_filepath = "code/accessSettingsTraversal.yaml"#str(sys.argv[arg_iter])
+		elif sys.argv[arg_iter] == "-access":
+			is_access_service = True
+		else:
+			print "unknown parameter flag " + sys.argv[arg_iter]
+		arg_iter +=1 
+	
+	print "traversal filepath:", traversal_filepath
+	print "logsdir:", logsdir
+	print " package_info:",package_info
 	print "traversing"
 	device = MonkeyRunner.waitForConnection()
 	count=1
-	logsdir=sys.argv[1]
+	#logsdir=sys.argv[1]
 	filename="screen"
-	traversal_filepath = './'+logsdir+'/traversal.yaml'
+	#traversal_filepath = './code/1traversal.yaml'
+	#traversal_filepath = './'+'code'+'/traversal.yaml'
 	#traversal_filepath = './data/traversal.yaml'
 	traversal_file_data = yaml_loader(traversal_filepath)
 	print "traversal data: "
 	print traversal_file_data
 	#start app
-	start_app(device)
+	#package_info = sys.argv[2]
+	if not is_access_service:
+		start_app(device, package_info)
 	traversal_info = traversal_file_data['traversal']
 	for traversal_info_key, traversal_info_value in traversal_info.iteritems():
 		print "key"
@@ -88,8 +120,13 @@ if __name__ == "__main__":
 				elif traversal_step['type'] == "wait":
 					time.sleep(traversal_step['time'])
 				##########################
-				#if traversal_key == "capture":
-				#	capture = traversal_value
+				## DRAG #####
+				elif traversal_step['type'] == "drag":
+					start = traversal_step['coords_start']
+					end = traversal_step['coords_end']
+					device.wake()
+					device.drag(start, end, float(traversal_step['duration']), 5)
+
 				## SCREENSHOT ##########
 				elif traversal_step['type'] == "screenshot":
 					device.wake()
@@ -97,6 +134,8 @@ if __name__ == "__main__":
 					print "writing to : ./"+logsdir+"/"+filename+str(count)+".png"
 					screenShot.writeToFile('./'+logsdir+'/'+filename+str(count)+".png",'png')
 					count=count+1
+
+
 	print "just traversal_info:"
 	print traversal_info
 	print "\nend traversal"

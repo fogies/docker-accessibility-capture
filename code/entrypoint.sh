@@ -90,33 +90,32 @@ until [[ "$bootanim" =~ "stopped" ]]; do
    echo "waiting $counter">>$emulog
    sleep 1
 done
-#echo "installing accessibility service" >>$emulog
-#adb install ./code/access.apk >>$emulog
-echo "installing ap">>$emulog
+echo "installing accessibility service" >>$emulog
+adb install ./code/access.apk >>$emulog
+#echo "installing ap">>$emulog
 adb install ./data/app.apk >>$emulog
-#while true
-#do
-#  a=2
-#done
+
 #adb shell am start -a android.intent.action.View -d 'market://details?id=com.a1.quiz.ged.free'
 #docker exec b3f adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./logs/nowScreen.png
 #ls /usr/local/android-sdk/build-tools/
 #echo "starting accessibility logging service" >>$emulog
 #to unlock phone
-#adb shell input keyevent 82
-#adb shell am start -a android.settings.ACCESSIBILITY_SETTINGS
+adb shell input keyevent 82
+adb shell am start -a android.settings.ACCESSIBILITY_SETTINGS
 #for snapshots from turning on accessibility service
-#mkdir ./$logsdir/accessSettings
+mkdir ./$logsdir/accessSettings
 #monkeyrunner ./code/turn-on-access-service.py $logsdir >>$emulog
 #mkdir ./$logsdir/ServiceScreen
 #monkeyrunner ./code/set-app-package.py $logsdir >>$emulog
 #while true
 #do
 #  a=2
-#done
-#monkeyrunner ./code/access-service-start.py >>$emulog
+##done
+#monkeyrunner ./code/turn-on-access-service.py $logsdir >>$emulog
+echo "here"
+monkeyrunner ./code/traverse-app.py -l $logsdir/accessSettings -t ./code/accessSettingsTraversal.yaml -access >>$emulog
+echo "after"
 
-echo "getting main screenshot" >>$emulog
 #dos2unix /usr/local/android-sdk/build-tools/22.0.1/*
 #package="$(/usr/local/android-sdk/build-tools/22.0.1/aapt dump badging /stuff/app.apk | grep package | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
 #package="$(/usr/local/android-sdk/build-tools/22.0.1/aapt.exe dump badging /stuff/app.apk | grep package | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
@@ -131,10 +130,11 @@ echo "getting main screenshot" >>$emulog
 #to unlock phone
 adb shell input keyevent 82
 #adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./logs/screenunlock.png
-#monkeyrunner ./code/screenshot.py $logsdir >>$emulog
 #echo "mainscreen complete" >>$emulog
 echo "traversing app" >>$emulog
-monkeyrunner ./code/traverse-app.py $logsdir >>$emulog
+traversalFilepath="./$logsdir/traversal.yaml"
+packageInfoFile="./data/packageInfo.txt"
+monkeyrunner ./code/traverse-app.py -l $logsdir -t $traversalFilepath -i $packageInfoFile >>$emulog
 echo "complete">>$emulog
 echo "getting logs" >>$emulog
 adb logcat -d *:I | grep TREE_RESULT > ./${logsdir}/tree.txt

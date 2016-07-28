@@ -3,10 +3,11 @@ from com.android.monkeyrunner import MonkeyRunner, MonkeyDevice
 import time, sys
 device = MonkeyRunner.waitForConnection()
 
+logsdir=sys.argv[1] +'/accessSetings'
 #pass as arguments the activity and package name pulled from the apk
 f = open('./code/accessPackageInfo.txt', 'r')
 package = f.readline().split(":")[1]
-#remove new line
+#remove new lines
 package = package[:-1]
 print package
 activity = f.readline().split(":")[1]
@@ -38,8 +39,19 @@ print "runComponent: "+runComponent
 #device.type(appPackage)
 time.sleep(10)
 screenShot = device.takeSnapshot()
-print "writing to : ./logs/accessServicesScreen.png"
-screenShot.writeToFile('./logs/accessServicesScreen.png','png')
+print "writing to : ./"+str(logsdir)+"/accessSettings/screen1.png"
+screenShot.writeToFile('./'+logsdir+'/accessSettings/screen1.png','png')
+
+#activate accessibility service button 6-13-16
+coord = [80,50]
+
+device.wake()
+device.touch(int(coord[0]),int(coord[1]),'DOWN_AND_UP')
+time.sleep(10)
+screenShot = device.takeSnapshot()
+print "writing to : ./"+str(logsdir)+"/accessSettings/screen2.png"
+screenShot.writeToFile('./'+logsdir+'/accessSettings/screen2.png','png')
+'''
 #device.press('KEYCODE_ENTER',MonkeyDevice.DOWN_AND_UP)
 device.press('KEYCODE_DPAD_UP', MonkeyDevice.DOWN_AND_UP)
 time.sleep(20)
@@ -90,6 +102,7 @@ screenShot.writeToFile('./logs/Access'+"4"+'Screen.png','png')
 #screenShot = device.takeSnapshot()
 #print "writing to : ./logs/completeAccessScreen.png"
 #screenShot.writeToFile('./logs/completeAccessScreen.png','png')
+'''
 
 
 

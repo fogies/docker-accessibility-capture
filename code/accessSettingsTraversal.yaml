@@ -1,0 +1,23 @@
+﻿#turn on accessibility service
+traversal: &traversal
+    id: "accessSetting"
+    commands:
+        - type: "screenshot"
+        - type: "wait"
+          time: 20
+        - type: "screenshot" 
+        - type: "click"
+          coords: !!python/tuple [35,200]
+        - type: "wait"
+          time: 10
+        - type: "screenshot"
+        - type: "click"
+          coords: !!python/tuple [165,35]
+        - type: "wait"
+          time: 10
+        - type: "screenshot"
+        - type: "click"
+          coords: !!python/tuple [175,335]
+        - type: "wait"
+          time: 10
+        - type: "screenshot"
