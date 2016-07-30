@@ -137,6 +137,6 @@ packageInfoFile="./data/packageInfo.txt"
 monkeyrunner ./code/traverse-app.py -l $logsdir -t $traversalFilepath -i $packageInfoFile >>$emulog
 echo "complete">>$emulog
 echo "getting logs" >>$emulog
-adb logcat -d *:I | grep TREE_RESULT > ./${logsdir}/tree.txt
+#adb logcat -d *:I | grep TREE_RESULT > ./${logsdir}/tree.txt
 adb logcat -d > ./$logsdir/allLog.txt
 echo "complete" >>$emulog

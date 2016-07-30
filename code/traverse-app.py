@@ -1,6 +1,6 @@
 from com.android.monkeyrunner import MonkeyRunner, MonkeyDevice
 #import com.android.provider.Settings
-import time, sys, os.path
+import time, sys, os.path, os
 import subprocess #for running monkey command to start app with package name alone
 print sys.path
 sys.path.append(os.path.join('/usr/lib/python2.7/dist-packages/'))
@@ -12,7 +12,7 @@ def yaml_loader(filepath):
 	data = yaml.load(file_descriptor)
 	return data
 
-def start_app(device, package_info):
+def get_package_info(package_info):
 	f = open(package_info, 'r')
 	package = f.readline().split(":")[1]
 	#remove new line
@@ -24,8 +24,10 @@ def start_app(device, package_info):
 	print "activity: "
 	print activity
 	f.close()
+	return {'package':package, 'activity':activity}
 
-	bashCommand = "adb shell monkey -p "+package+" -c android.intent.category.LAUNCHER 1"
+def start_app(device, app_info):
+	bashCommand = "adb shell monkey -p "+app_info['package']+" -c android.intent.category.LAUNCHER 1"
 	process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
 	output = process.communicate()[0]
 	print "output: "
@@ -51,6 +53,12 @@ def check_valid_screen(compImage):
 			return 1
 	print "didn't match a fail screen from: " + str(refFailScreensDir)
 	return 0
+
+def bashCall(bashCommand):
+	process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+	output = process.communicate()[0]
+	print "output "
+	print output
 
 if __name__ == "__main__":
 	print "here"
@@ -85,6 +93,7 @@ if __name__ == "__main__":
 	print "traversing"
 	device = MonkeyRunner.waitForConnection()
 	count=1
+	capture_count=1
 	#logsdir=sys.argv[1]
 	filename="screen"
 	#traversal_filepath = './code/1traversal.yaml'
@@ -95,20 +104,30 @@ if __name__ == "__main__":
 	print traversal_file_data
 	#start app
 	#package_info = sys.argv[2]
+	app_info={}
 	if not is_access_service:
-		start_app(device, package_info)
+		print "not access service"
+		app_info = get_package_info(package_info)
+		start_app(device, app_info)
+	else:
+		print "access service"
 	traversal_info = traversal_file_data['traversal']
 	for traversal_info_key, traversal_info_value in traversal_info.iteritems():
 		print "key"
 		print traversal_info_key 
 		print "\nvalue:"
 		print traversal_info_value
-		if(traversal_info_key == "commands"):
+		if (traversal_info_key == "commands"):
+			print "traversal info value:"
+			print traversal_info_value
 			for traversal_step in traversal_info_value:
 				#if traversal_value == "action":
 				#	action = traversal_value
+				print "traversal step"
+				print traversal_step
 				## CLICK ###############
 				if traversal_step['type'] == "click":
+					print "click"
 					coord = traversal_step['coords']
 					print "coords: "+str(traversal_step['coords']) 
 					device.wake()
@@ -118,6 +137,7 @@ if __name__ == "__main__":
 					device.type(text)
 				## WAIT ################
 				elif traversal_step['type'] == "wait":
+					print "wait"
 					time.sleep(traversal_step['time'])
 				##########################
 				## DRAG #####
@@ -126,16 +146,70 @@ if __name__ == "__main__":
 					end = traversal_step['coords_end']
 					device.wake()
 					device.drag(start, end, float(traversal_step['duration']), 5)
-
 				## SCREENSHOT ##########
 				elif traversal_step['type'] == "screenshot":
+					print "screenshot"
 					device.wake()
 					screenShot = device.takeSnapshot()
 					print "writing to : ./"+logsdir+"/"+filename+str(count)+".png"
 					screenShot.writeToFile('./'+logsdir+'/'+filename+str(count)+".png",'png')
 					count=count+1
-
-
+				## ACCESSIBILITY CAPTURE
+				elif traversal_step['type'] == "capture":
+					print "capture"
+				 	capture_types = traversal_step['capture_types']
+				 	print "types: "
+				 	print capture_types
+					#create directory for all capture info
+					cap_dir_name = './'+logsdir+'/capture'+str(capture_count)
+					#cap_dir = os.path.dirname(cap_dir_name)
+					#print "cap_dir "+str(cap_dir)
+					bashCommand = "mkdir "+cap_dir_name
+					print"1"
+					bashCall(bashCommand)
+					print "1.5"
+					device.wake()
+					print "2"
+					screenShot = device.takeSnapshot()
+					print "3"
+					screenShot.writeToFile(cap_dir_name+'/'+'capScreen'+str(capture_count)+'.png', 'png')
+					print "4"
+					capture_count = capture_count + 1
+					if 'current_tree' in capture_types:
+						print "getting current tree"
+						tree_file_name = "currentTree"+str(capture_count)
+						bashCommand = "adb shell am broadcast -a xiaoyiz.pullCurrentTree --es fileName " + tree_file_name
+						bashCall(bashCommand)
+						emu_file = "/storage/sdcard/Android/data/uw.AccessibilityReport/files/"+app_info['package'] + "/Tree/"+tree_file_name
+						local_file = cap_dir_name+"/"+tree_file_name
+						bashCommand = "adb pull -p " + emu_file+ " " + local_file
+						print "bash command: "+bashCommand
+						bashCall(bashCommand)
+	    			# capture_count = capture_count + 1
+	   #  			if 'current_tree' in capture_types:
+				# 		print "getting current tree"
+				# 		tree_file_name = "currentTree"+str(capture_count)
+				# 		#get tree from accessibility service
+				# 		bashCommand = "./adb shell am broadcast -a xiaoyiz.pullCurrentTree --es fileName "+tree_file_name
+				# 		print "bash command: "+bashCommand
+				# 		process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+				# 		output = process.communicate()[0]
+				# 		print "output: "
+				# 		print output
+				# 		print "saving file to /storage/sdcard/Android/data/uw.AccessibilityReport/files/"+app_info['package'] + \
+				# 				"/Tree/currentTree"+str(capture_count)
+				# 		#get extracted file from emulator sd card
+				# 		bashCommand = "./adb pull" + \
+				# 						" /storage/sdcard/Android/data/uw.AccessibilityReport/files/"+app_info['package']+"/Tree/"+tree_file_name + \
+				# 						cap_dir_name + "/" + tree_file_name
+				# 		print "bash command: "+bashCommand
+				# 		process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+				# 		output = process.communicate()[0]
+    			else:
+    				print "unknown type"
+    				print traversal_step['type']
+    		print "end of for"
+    	print "end of commands"
 	print "just traversal_info:"
 	print traversal_info
 	print "\nend traversal"
