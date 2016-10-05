@@ -5,6 +5,14 @@ device = MonkeyRunner.waitForConnection()
 count=1
 logsdir=sys.argv[1]
 
+runComponent='com.android.settings/.Settings'
+device.startActivity(component=runComponent)
+time.sleep(6)
+screenShot = device.takeSnapshot()
+print "writing to : ./"+logsdir+"/accessSettings/"+str(count)+"Screen.png"
+screenShot.writeToFile('./'+logsdir+'/accessSettings/'+str(count)+'AccessScreen.png','png')
+count=count+1
+
 device.press('KEYCODE_DPAD_DOWN', MonkeyDevice.DOWN_AND_UP)
 time.sleep(6)
 screenShot = device.takeSnapshot()

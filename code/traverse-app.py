@@ -55,6 +55,7 @@ def check_valid_screen(compImage):
 	return 0
 
 def bashCall(bashCommand):
+	print "bash Call: "+bashCommand
 	process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
 	output = process.communicate()[0]
 	print "output "
@@ -93,7 +94,7 @@ if __name__ == "__main__":
 	print "traversing"
 	device = MonkeyRunner.waitForConnection()
 	count=1
-	capture_count=1
+	capture_count=0
 	#logsdir=sys.argv[1]
 	filename="screen"
 	#traversal_filepath = './code/1traversal.yaml'
@@ -107,7 +108,12 @@ if __name__ == "__main__":
 	app_info={}
 	if not is_access_service:
 		print "not access service"
+		#get package name
 		app_info = get_package_info(package_info)
+		#set accessibility service
+		bashCommand="adb shell am broadcast -a xiaoyiz.setPackage --es packageName "+app_info['package']
+		bashCall(bashCommand)
+		#open app
 		start_app(device, app_info)
 	else:
 		print "access service"
@@ -156,6 +162,7 @@ if __name__ == "__main__":
 					count=count+1
 				## ACCESSIBILITY CAPTURE
 				elif traversal_step['type'] == "capture":
+					capture_count = capture_count + 1
 					print "capture"
 				 	capture_types = traversal_step['capture_types']
 				 	print "types: "
@@ -165,24 +172,29 @@ if __name__ == "__main__":
 					#cap_dir = os.path.dirname(cap_dir_name)
 					#print "cap_dir "+str(cap_dir)
 					bashCommand = "mkdir "+cap_dir_name
-					print"1"
 					bashCall(bashCommand)
-					print "1.5"
 					device.wake()
-					print "2"
 					screenShot = device.takeSnapshot()
-					print "3"
 					screenShot.writeToFile(cap_dir_name+'/'+'capScreen'+str(capture_count)+'.png', 'png')
-					print "4"
-					capture_count = capture_count + 1
 					if 'current_tree' in capture_types:
 						print "getting current tree"
 						tree_file_name = "currentTree"+str(capture_count)
+						#capture current tree
 						bashCommand = "adb shell am broadcast -a xiaoyiz.pullCurrentTree --es fileName " + tree_file_name
 						bashCall(bashCommand)
+						#test 
+						bashCommand = "adb shell ls /storage/"
+						bashCall(bashCommand)
+						bashCommand = "adb shell ls /storage/sdcard/"
+						bashCall(bashCommand)
+						bashCommand = "adb shell ls /storage/sdcard/Android/"
+						bashCall(bashCommand)
+						bashCommand = "adb shell ls /storage/sdcard/Android/data/"
+						bashCall(bashCommand)
+						#pull tree file
 						emu_file = "/storage/sdcard/Android/data/uw.AccessibilityReport/files/"+app_info['package'] + "/Tree/"+tree_file_name
 						local_file = cap_dir_name+"/"+tree_file_name
-						bashCommand = "adb pull -p " + emu_file+ " " + local_file
+						bashCommand = "adb pull " + emu_file+ " " + local_file
 						print "bash command: "+bashCommand
 						bashCall(bashCommand)
 	    			# capture_count = capture_count + 1
