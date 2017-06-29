@@ -23,14 +23,17 @@ Definitely need a renaming :)
 	 - Dockerfile
 
 	 - Directory: code
-	   -- screenshot.py
 	   -- start-emulator
+	   -- traverse-app.py
+	   -- access.apk
 
 	 - Directory: apps
 	   -- Directory: <APP1>
 	      --- app.apk
+	      --- traversal.yaml
 	   -- Directory: <APP2>
 	      --- app.apk
+	      --- traversal.yaml
 	 etc
 
  the directory name for each app can be anything
