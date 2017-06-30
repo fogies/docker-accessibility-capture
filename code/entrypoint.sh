@@ -161,7 +161,7 @@ echo "getting logs" >>$emulog
 adb logcat -d > ./$logsdir/allLog.txt
 echo "complete" >>$emulog
 
-while true
-do
-  a=1
-done
+# while true
+# do
+#   a=1
+# done
