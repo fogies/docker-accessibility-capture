@@ -5,7 +5,6 @@
 #  a=2
 #done
 #
-
 cp ./code/test.ini usr/local/android-sdk/platforms/android-19/skins/WQVGA400/hardware.ini
 
 while [[ $# > 1 ]]
@@ -162,3 +161,7 @@ echo "getting logs" >>$emulog
 adb logcat -d > ./$logsdir/allLog.txt
 echo "complete" >>$emulog
 
+while true
+do
+  a=1
+done
