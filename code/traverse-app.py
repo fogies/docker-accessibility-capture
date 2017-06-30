@@ -180,23 +180,26 @@ if __name__ == "__main__":
 						print "getting current tree"
 						tree_file_name = "currentTree"+str(capture_count)
 						#capture current tree
-						bashCommand = "adb shell am broadcast -a xiaoyiz.pullCurrentTree --es fileName " + tree_file_name
+						#bashCommand = "adb shell am broadcast -a xiaoyiz.pullCurrentTree --es fileName " + tree_file_name
+						bashCommand = "adb shell am broadcast -a xiaoyiz.pullCurrentTree"
 						bashCall(bashCommand)
 						#test 
+						bashCommand = "adb shell ls /"
+						bashCall(bashCommand)
+						bashCommand = "adb shell ls /data/"
+						bashCall(bashCommand)
+						bashCommand = "adb shell ls /data/data/"
+						bashCall(bashCommand)
+						bashCommand = "adb shell ls /data/data/uw.AccessibilityReport"
+						bashCall(bashCommand)
 						bashCommand = "adb shell ls /storage/"
-						bashCall(bashCommand)
-						bashCommand = "adb shell ls /storage/sdcard/"
-						bashCall(bashCommand)
-						bashCommand = "adb shell ls /storage/sdcard/Android/"
-						bashCall(bashCommand)
-						bashCommand = "adb shell ls /storage/sdcard/Android/data/"
 						bashCall(bashCommand)
 						#pull tree file
 						emu_file = "/storage/sdcard/Android/data/uw.AccessibilityReport/files/"+app_info['package'] + "/Tree/"+tree_file_name
 						local_file = cap_dir_name+"/"+tree_file_name
 						bashCommand = "adb pull " + emu_file+ " " + local_file
 						print "bash command: "+bashCommand
-						bashCall(bashCommand)
+						#bashCall(bashCommand)
 	    			# capture_count = capture_count + 1
 	   #  			if 'current_tree' in capture_types:
 				# 		print "getting current tree"

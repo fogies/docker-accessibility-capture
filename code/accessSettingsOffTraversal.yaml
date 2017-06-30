@@ -17,7 +17,7 @@ traversal: &traversal
           time: 10
         - type: "screenshot"
         - type: "click"
-          coords: !!python/tuple [175,335]
+          coords: !!python/tuple [170,260]
         - type: "wait"
           time: 10
         - type: "screenshot"

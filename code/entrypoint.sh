@@ -5,6 +5,7 @@
 #  a=2
 #done
 #
+cp ./code/test.ini usr/local/android-sdk/platforms/android-19/skins/WQVGA400/hardware.ini
 
 while [[ $# > 1 ]]
 do
@@ -14,6 +15,9 @@ logsdir="logs/"$timestamp
 echo $logsdir
 mkdir $logsdir
 
+#Google Scanner: scanner
+#Accessibility Capture: capture
+technique="capture"
 #copy traversal file into the appropriate directory#
 #cp ./data/traversal.txt $logsdir/traversal.txt
 cp ./data/traversal.yaml $logsdir/traversal.yaml
@@ -66,7 +70,7 @@ fi
 
 
 echo "no" | /usr/local/android-sdk/tools/android create avd -f -n test -t ${EMULATOR} --skin WQVGA400 --abi default/${ARCH} >>$emulog
-echo "no" | /usr/local/android-sdk/tools/emulator64-${EMU} -memory 768 -avd test -noaudio -no-window -gpu off -verbose -qemu -usbdevice tablet -vnc :0 &
+echo "no" | /usr/local/android-sdk/tools/emulator64-${EMU} -memory 2000 -avd test -noaudio -no-window -gpu off -verbose -qemu -usbdevice tablet -vnc :0 &
 #adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./$logsdir/screen11.png
 echo "Waiting for emulator to start..." >>$emulog
 
@@ -90,47 +94,58 @@ until [[ "$bootanim" =~ "stopped" ]]; do
    echo "waiting $counter">>$emulog
    sleep 1
 done
+
+#install accessibility analysis tool
+accessibility_app=""
+if [[ "$technique" = "scanner" ]] 
+then
+  echo "Google Scanner" >> $emulog
+  accessibility_app="./code/scanner/Accessibility_Scanner_v1.1.1.apk"
+fi
+if [[ "$technique" = "capture" ]] 
+then
+  echo "Accessibility Capture">> $emulog
+  accessibility_app="./code/app_v19.apk" 
+fi
 echo "installing accessibility service" >>$emulog
-adb install ./code/access.apk >>$emulog
-#echo "installing ap">>$emulog
+adb install $accessibility_app >>$emulog
+
+#install app
+echo "installing app">>$emulog
 adb install ./data/app.apk >>$emulog
 
 
-#adb shell am start -a android.intent.action.View -d 'market://details?id=com.a1.quiz.ged.free'
-#docker exec b3f adb shell screencap -p | perl -pe 's/\x0D\x0A/\x0A/g' > ./logs/nowScreen.png
-#ls /usr/local/android-sdk/build-tools/
-#echo "starting accessibility logging service" >>$emulog
-#to unlock phone
-adb shell input keyevent 82
-adb shell am start -a android.settings.ACCESSIBILITY_SETTINGS
 #for snapshots from turning on accessibility service
 mkdir ./$logsdir/accessSettings
-#monkeyrunner ./code/turn-on-access-service.py $logsdir >>$emulog
-#mkdir ./$logsdir/ServiceScreen
-#monkeyrunner ./code/set-app-package.py $logsdir >>$emulog
+
+
+
+#turn on accessibility service
+echo "here"
+file=""
+if [[ "$technique" = "scanner" ]] 
+then
+  echo "Google Scanner" >> $emulog
+  file="./code/scanner/accessScannerSettingsTraversal.yaml"
+fi
+if [[ "$technique" = "capture" ]] 
+then
+  echo "Accessibility Capture">> $emulog
+  file="./code/accessSettingsTraversal.yaml" 
+fi
+echo "file ${file}">>$emulog
+#to unlock phone
+adb shell input keyevent 82
+#open accessibility setting menu
+adb shell am start -a android.settings.ACCESSIBILITY_SETTINGS
+#turn on accessibility service
+monkeyrunner ./code/traverse-app.py -l $logsdir/accessSettings -t $file -access >>$emulog
+echo "after"
+
 #while true
 #do
-#  a=2
-##done
-#monkeyrunner ./code/turn-on-access-service.py $logsdir >>$emulog
-echo "here"
-monkeyrunner ./code/traverse-app.py -l $logsdir/accessSettings -t ./code/accessSettingsTraversal.yaml -access >>$emulog
-echo "after"
-echo "in loop"
-while true
-do
- a=2
-done
-#dos2unix /usr/local/android-sdk/build-tools/22.0.1/*
-#package="$(/usr/local/android-sdk/build-tools/22.0.1/aapt dump badging /stuff/app.apk | grep package | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
-#package="$(/usr/local/android-sdk/build-tools/22.0.1/aapt.exe dump badging /stuff/app.apk | grep package | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
-#package="$(./usr/local/android-sdk/build-tools/22.0.1/aapt dump badging /stuff/app.apk | grep package | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
-
-#package="com.a1.quiz.ged.free"
-#activity="com.a1.quiz.ged.free.MainActivity"
-#echo "pkg: " $package >>$emulog
-#activity="$(aapt dump badging /data/app.apk | grep launchable-activity | awk '{print $2}' | sed s/name=//g | sed s/\'//g)"
-#echo "activity: "  $activity >>$emulog
+ # a=1
+#done
 
 #to unlock phone
 adb shell input keyevent 82
@@ -145,3 +160,8 @@ echo "getting logs" >>$emulog
 #adb logcat -d *:I | grep TREE_RESULT > ./${logsdir}/tree.txt
 adb logcat -d > ./$logsdir/allLog.txt
 echo "complete" >>$emulog
+
+while true
+do
+  a=1
+done
